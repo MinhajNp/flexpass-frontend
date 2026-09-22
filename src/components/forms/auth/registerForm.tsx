@@ -3,82 +3,116 @@ import { useNavigate } from 'react-router-dom'
 import authService from '../../../services/authService'
 import { getApiErrorMessage } from '../../../utils/apiError'
 import { registerSchema } from '../../../validation/authValidation'
+import FormInput from '../common/formInput'
 
 function RegisterForm() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const navigate = useNavigate()
-  const [error, setError] = useState('')
+  const [errors, setErrors] = useState<{
+    name?: string
+    email?: string
+    password?: string
+  }>({})
+
+  const [generalError, setGeneralError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
+  const navigate = useNavigate()
 
-const handleSubmit = async (
-  event: React.FormEvent<HTMLFormElement>,
-) => {
-  event.preventDefault()
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault()
 
-  setError('')
+    setErrors({})
+    setGeneralError('')
 
-  const formData = {
-    name,
-    email,
-    password,
+    const formData = {
+      name,
+      email,
+      password,
+    }
+
+    const result = registerSchema.safeParse(formData)
+
+    if (!result.success) {
+      const fieldErrors: {
+        name?: string
+        email?: string
+        password?: string
+      } = {}
+
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0]
+
+        if (
+          field === 'name' ||
+          field === 'email' ||
+          field === 'password'
+        ) {
+          fieldErrors[field] = issue.message
+        }
+      })
+
+      setErrors(fieldErrors)
+      return
+    }
+
+    setIsLoading(true)
+
+    try {
+      const response = await authService.register(formData)
+
+      navigate('/verify-otp', {
+        state: {
+          userId: response.userId,
+        },
+      })
+    } catch (error) {
+      setGeneralError(getApiErrorMessage(error))
+    } finally {
+      setIsLoading(false)
+    }
   }
-
-  const result = registerSchema.safeParse(formData)
-  setIsLoading(true)
-
-  if (!result.success) {
-    setError(
-      result.error.issues[0]?.message ?? 'Please check your input',
-    )
-    return
-  }
-
-  try {
-    const response = await authService.register(formData)
-
-    navigate('/verify-otp', {
-      state: {
-        userId: response.userId,
-      },
-    })
-  } catch (error) {
-    setError(getApiErrorMessage(error))
-  }finally{
-    setIsLoading(false)
-  }
-}
-
 
   return (
-    <form  onSubmit={handleSubmit}>
-      <input
-        type="text"
+    <form onSubmit={handleSubmit}>
+      <FormInput
+        id="name"
+        label="Full Name"
         value={name}
         onChange={(event) => setName(event.target.value)}
-        placeholder="Name"
+        placeholder="John Doe"
+        error={errors.name}
       />
 
-      <input
+      <FormInput
+        id="email"
+        label="Email Address"
         type="email"
         value={email}
         onChange={(event) => setEmail(event.target.value)}
-        placeholder="Email"
+        placeholder="name@example.com"
+        error={errors.email}
       />
 
-      <input
+      <FormInput
+        id="password"
+        label="Password"
         type="password"
         value={password}
         onChange={(event) => setPassword(event.target.value)}
-        placeholder="Password"
+        placeholder="••••••••"
+        error={errors.password}
       />
 
-      <button type="submit" disabled={isLoading}>{isLoading? 'Registering....' : 'Register'}</button>
+      {generalError && <p>{generalError}</p>}
 
-      {error && <p>{error}</p>}
+      <button type="submit" disabled={isLoading}>
+        {isLoading ? 'Registering...' : 'Register'}
+      </button>
     </form>
   )
 }

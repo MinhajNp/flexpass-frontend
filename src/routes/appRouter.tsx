@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import PublicRoute from './publicRoute'
 import PublicLayout from './publicLayout'
+import AuthLayout from './authLayout'
 import HomePage from '../pages/public/homePage'
 import LoginPage from '../pages/public/auth/loginPage'
 import RegisterPage from '../pages/public/auth/registerPage'
@@ -17,19 +18,25 @@ const appRouter = createBrowserRouter([
             path: '/',
             element: <HomePage />,
           },
-          {
-            path: '/login',
-            element: <LoginPage />,
-          },
-          {
-            path: '/register',
-            element: <RegisterPage />,
-          },
-          {
-            path: '/verify-otp',
-            element: <VerifyOtpPage />,
-          },
         ],
+      },
+    ],
+  },
+
+  {
+    element: <AuthLayout />,
+    children: [
+      {
+        path: '/login',
+        element: <LoginPage />,
+      },
+      {
+        path: '/register',
+        element: <RegisterPage />,
+      },
+      {
+        path: '/verify-otp',
+        element: <VerifyOtpPage />,
       },
     ],
   },
