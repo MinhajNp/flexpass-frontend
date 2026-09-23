@@ -78,7 +78,7 @@ function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-5">
       <FormInput
         id="name"
         label="Full Name"
@@ -108,11 +108,26 @@ function RegisterForm() {
         error={errors.password}
       />
 
-      {generalError && <p>{generalError}</p>}
+      {generalError && <p className="text-sm text-red-600">{generalError}</p>}
 
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? 'Registering...' : 'Register'}
-      </button>
+      <button
+  type="submit"
+  disabled={isLoading}
+  className="w-full rounded-xl bg-[#2D5A53] py-3 text-sm font-semibold text-white transition hover:bg-[#244a44] disabled:cursor-not-allowed disabled:opacity-60"
+>
+  {isLoading ? 'Registering...' : 'Create Account'}
+</button>
+
+<p className="text-center text-sm text-gray-500">
+  Already have an account?{' '}
+  <button
+    type="button"
+    onClick={() => navigate('/login')}
+    className="font-semibold text-[#2D5A53] hover:underline"
+  >
+    Log In
+  </button>
+</p>
     </form>
   )
 }

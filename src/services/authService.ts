@@ -5,11 +5,16 @@ interface RegisterData {
   email: string
   password: string
 }
+
 interface VerifyOtpData {
   userId: string
   otp: string
 }
 
+interface LoginData {
+  email: string
+  password: string
+}
 
 const authService = {
   register: async (data: RegisterData) => {
@@ -19,10 +24,16 @@ const authService = {
   },
 
   verifyOtp: async (data: VerifyOtpData) => {
-  const response = await axiosInstance.post('/auth/verify-otp', data)
+    const response = await axiosInstance.post('/auth/verify-otp', data)
 
-  return response.data
-},
+    return response.data
+  },
+
+  login: async (data: LoginData) => {
+    const response = await axiosInstance.post('/auth/login', data)
+
+    return response.data
+  },
 }
 
 export default authService
