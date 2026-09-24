@@ -4,6 +4,7 @@ import authService from '../../../services/authService'
 import { getApiErrorMessage } from '../../../utils/apiError'
 import { loginSchema } from '../../../validation/authValidation'
 import FormInput from '../common/formInput'
+import useAuth from '../../../hooks/useAuth'
 
 
 interface LoginFormErrors {
@@ -22,6 +23,8 @@ function LoginForm() {
 
   const navigate = useNavigate()
 
+  const {setAccessToken } = useAuth()
+
   const handleSubmit = async (
   event: React.FormEvent<HTMLFormElement>,
 ) => {
@@ -35,7 +38,7 @@ function LoginForm() {
     password,
   }
 
-  const result = loginSchema.safeParse(formData)
+  const result = loginSchema.safeParse(formData)   //zod validation
 
   if (!result.success) {
     const fieldErrors: LoginFormErrors = {}
@@ -56,10 +59,9 @@ setIsLoading(true)
 try {
   const accessToken = await authService.login(formData)
 
-  console.log('Access token:', accessToken)
+  setAccessToken(accessToken);
 
-  // Authentication state will be added next.
-  console.log(accessToken)
+ navigate('/dashboard')
 } catch (error) {
   setGeneralError(getApiErrorMessage(error))
 } finally {

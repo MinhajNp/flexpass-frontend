@@ -6,6 +6,8 @@ import HomePage from '../pages/public/homePage'
 import LoginPage from '../pages/public/auth/loginPage'
 import RegisterPage from '../pages/public/auth/registerPage'
 import VerifyOtpPage from '../pages/public/auth/verifyOtpPage'
+import ProtectedRoute from './protectedRoute'
+import DashboardPage from '../pages/user/dashboardPage'
 
 const appRouter = createBrowserRouter([
   {
@@ -40,6 +42,16 @@ const appRouter = createBrowserRouter([
       },
     ],
   },
+
+  {
+  element: <ProtectedRoute />,
+  children: [
+    {
+      path: '/dashboard',
+      element: <DashboardPage />,
+    },
+  ],
+},
 ])
 
 export default appRouter

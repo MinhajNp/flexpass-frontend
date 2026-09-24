@@ -34,6 +34,11 @@ const authService = {
 
     return response.data
   },
+
+  refresh: async () => {
+  const response = await axiosInstance.post('/auth/refresh')
+  return response.data
+},
 }
 
 export default authService
