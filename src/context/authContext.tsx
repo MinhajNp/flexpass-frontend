@@ -10,7 +10,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [accessToken, setAccessToken] = useState<string | null>(null)
-
+console.log('AuthProvider token:', accessToken)
   const logout = () => {
     setAccessToken(null)
   }
