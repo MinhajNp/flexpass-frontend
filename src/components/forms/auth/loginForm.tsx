@@ -91,6 +91,8 @@ try {
     error={errors.password}
   />
 
+    {generalError && <p className="text-sm text-red-600">{generalError}</p>}
+
   <button
   type="submit"
   disabled={isLoading}
@@ -98,6 +100,17 @@ try {
 >
   {isLoading ? 'Logging in...' : 'Log In'}
 </button>
+
+<p className="text-center text-sm text-gray-500">
+  Don't have an account?{' '}
+  <button
+    type="button"
+    onClick={() => navigate('/register')}
+    className="font-semibold text-[#2D5A53] hover:underline"
+  >
+    Create an account
+  </button>
+</p>
 </form>
   )
 }
